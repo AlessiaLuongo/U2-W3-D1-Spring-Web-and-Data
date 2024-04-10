@@ -1,7 +1,7 @@
 package alessia.U2W3D1.Spring.Web.and.Data.controllers;
 
-import alessia.U2W3D2Compitopomeridiano.entities.Author;
-import alessia.U2W3D2Compitopomeridiano.services.AuthorService;
+import alessia.U2W3D1.Spring.Web.and.Data.entities.Author;
+import alessia.U2W3D1.Spring.Web.and.Data.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

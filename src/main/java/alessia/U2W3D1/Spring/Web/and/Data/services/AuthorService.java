@@ -1,53 +1,64 @@
 package alessia.U2W3D1.Spring.Web.and.Data.services;
 
-import alessia.U2W3D2Compitopomeridiano.entities.Author;
-import alessia.U2W3D2Compitopomeridiano.exceptions.NotFoundException;
+import alessia.U2W3D1.Spring.Web.and.Data.entities.Author;
+import alessia.U2W3D1.Spring.Web.and.Data.exceptions.BadRequestException;
+import alessia.U2W3D1.Spring.Web.and.Data.exceptions.NotFoundException;
+import alessia.U2W3D1.Spring.Web.and.Data.repositories.AuthorsDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 
 @Service
 public class AuthorService {
+    @Autowired
+    AuthorsDAO authorsDAO;
 
     List<Author> authorList = new ArrayList<>();
 
     public List<Author> getAuthorList() {
-        return this.authorList;
+        return this.authorsDAO.findAll();
     }
 
-    public Author saveAuthor(Author body){
-        Random rndm = new Random();
-        body.setId(rndm.nextInt(1,1000));
-        body.setAvatar("https://ui-avatars.com/api/?name="+body.getName()+"+"+body.getSurname());
-        this.authorList.add(body);
-        return body;
+    public Author saveAuthor(Author newAuthor) {
+
+        newAuthor.setAvatar("https://ui-avatars.com/api/?name=" + newAuthor.getName() + "+" + newAuthor.getSurname());
+
+        return authorsDAO.save(newAuthor);
     }
+
+
     public Author findAuthorById(int id){
-        Author found = null;
-        for (Author author : this.authorList){
-            if (author.getId()== id)found = author;
-        }
-        if(found == null) throw new NotFoundException(id);
-        else return found;
+      return authorsDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
+
     }
 
-    public Author findAuthorByIdAndUpdate(int id, Author updatedBody){
-        Author found = null;
-        for (Author author : this.authorList){
-            if (author.getId()== id)found = author;
-            author.setName(updatedBody.getName());
-            author.setAvatar(updatedBody.getAvatar());
+    public Author findAuthorByIdAndUpdate(int id, Author updatedBody) {
+        Optional<Author> optionalAuthor = authorsDAO.findById(id);
+
+        if (optionalAuthor.isPresent()) {
+            Author found = optionalAuthor.get();
+            found.setName(updatedBody.getName());
+            found.setSurname(updatedBody.getSurname());
+            found.setBirthdayYear(updatedBody.getBirthdayYear());
+            return this.authorsDAO.save(found);
+        } else {
+            throw new NotFoundException(id);
         }
-        if(found == null) throw new NotFoundException(id);
-        else return found;
     }
 
     public void findAuthorByIdAndDelete(int id){
-
-        this.authorList.removeIf(current -> current.getId() == id);
+        Optional<Author> optionalAuthor = authorsDAO.findById(id);
+        if (optionalAuthor.isPresent()) {
+            Author found = optionalAuthor.get();
+           this.authorsDAO.delete(found);
+        } else {
+            throw new NotFoundException(id);
+        }
     }
 
 

@@ -1,7 +1,8 @@
 package alessia.U2W3D1.Spring.Web.and.Data.controllers;
 
-import alessia.U2W3D2Compitopomeridiano.entities.BlogPost;
-import alessia.U2W3D2Compitopomeridiano.services.BlogPostService;
+import alessia.U2W3D1.Spring.Web.and.Data.entities.BlogPost;
+import alessia.U2W3D1.Spring.Web.and.Data.payloads.PayloadBlogPost;
+import alessia.U2W3D1.Spring.Web.and.Data.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,15 @@ public class BlogPostController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    private BlogPost saveBlogPost(@RequestBody BlogPost body){
-        return this.blogPostService.saveBlogPost(body);
+    private BlogPost saveBlogPost(@RequestBody PayloadBlogPost payload){
+        BlogPost blogPost = new BlogPost();
+        blogPost.setAuthor(payload.getName());
+        blogPost.setTitle(payload.getTitle());
+        blogPost.setContent(payload.getContent());
+        blogPost.setCategory(payload.getCategory());
+        blogPost.setReadingTime(payload.getReadingTime());
+
+        return this.blogPostService.saveBlogPost(blogPost);
     }
 
     @GetMapping("/{blogPostId}")

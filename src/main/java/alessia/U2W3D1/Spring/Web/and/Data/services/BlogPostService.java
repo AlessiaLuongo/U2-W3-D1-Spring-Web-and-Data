@@ -1,52 +1,62 @@
 package alessia.U2W3D1.Spring.Web.and.Data.services;
 
-import alessia.U2W3D2Compitopomeridiano.entities.BlogPost;
-import alessia.U2W3D2Compitopomeridiano.exceptions.NotFoundException;
+import alessia.U2W3D1.Spring.Web.and.Data.entities.Author;
+import alessia.U2W3D1.Spring.Web.and.Data.entities.BlogPost;
+import alessia.U2W3D1.Spring.Web.and.Data.exceptions.BadRequestException;
+import alessia.U2W3D1.Spring.Web.and.Data.exceptions.NotFoundException;
+import alessia.U2W3D1.Spring.Web.and.Data.repositories.AuthorsDAO;
+import alessia.U2W3D1.Spring.Web.and.Data.repositories.BlogPostDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 @Service
 public class BlogPostService {
+
+    @Autowired
+    BlogPostDAO blogPostDAO;
     private List<BlogPost> blogPostList = new ArrayList<>();
+    private AuthorsDAO authorsDAO;
 
     public List<BlogPost> getBlogPostList(){
-        return this.blogPostList;
+        return this.blogPostDAO.findAll();
     }
 
-    public BlogPost saveBlogPost(BlogPost body){
-        Random rndm = new Random();
-        body.setId(rndm.nextInt(1,1000));
-        this.blogPostList.add(body);
-        return body;
+    public BlogPost saveBlogPost(BlogPost body) {
+       return this.blogPostDAO.save(new BlogPost());
     }
 
     public BlogPost findById(int id){
-        BlogPost found = null;
-        for (BlogPost blogPost : this.blogPostList){
-            if (blogPost.getId() == id) found = blogPost;
-        }
-        if(found == null) throw new NotFoundException(id);
-        else return found;
+        return blogPostDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
+
     }
     public BlogPost findByIdAndUpdate(int id, BlogPost updatedBlogPost){
-        BlogPost found = null;
-        for (BlogPost blogPost : this.blogPostList){
-            if (blogPost.getId() == id) found = blogPost;
-            found.setTitle(updatedBlogPost.getTitle());
-            found.setCategory(updatedBlogPost.getCategory());
-            found.setContent(updatedBlogPost.getContent());
-            found.setReadingTime(updatedBlogPost.getReadingTime());
+        Optional<BlogPost> optionalBlogPost = blogPostDAO.findById(id);
+
+        if (optionalBlogPost.isPresent()) {
+            BlogPost found = optionalBlogPost.get();
+            found.setAuthor(optionalBlogPost.get().getAuthor());
+            found.setTitle(optionalBlogPost.get().getTitle());
+            found.setCategory(optionalBlogPost.get().getCategory());
+            found.setContent(optionalBlogPost.get().getContent());
+            return this.blogPostDAO.save(found);
+        } else {
+            throw new NotFoundException(id);
         }
-        if(found == null) throw new NotFoundException(id);
-        else return found;
     }
 
     public void findByIdAndDelete(int id){
+        Optional<BlogPost> optionalBlogPost = blogPostDAO.findById(id);
+        if (optionalBlogPost.isPresent()) {
+            BlogPost found = optionalBlogPost.get();
+            this.blogPostDAO.delete(found);
+        } else {
+            throw new NotFoundException(id);
+        }
 
-        this.blogPostList.removeIf(current -> current.getId() == id);
     }
 
 }
