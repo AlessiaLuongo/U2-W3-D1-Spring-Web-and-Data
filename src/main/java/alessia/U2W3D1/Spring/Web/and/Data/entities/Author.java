@@ -22,7 +22,7 @@ public class Author {
     private int id;
     private String name;
     private String surname;
-    private String Email;
+    private String eMail;
     private int birthdayYear;
     private String avatar;
 
