@@ -12,21 +12,21 @@ public class ExceptionsHandler {
     @ExceptionHandler(BadRequestException.class)
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionsPayload handleBadRequest(BadRequestException ex){
-        return new ExceptionsPayload(ex.getMessage(), LocalDateTime.now());
+    public ErrorsPayload handleBadRequest(BadRequestException ex){
+        return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
 
-    public ExceptionsPayload handleNotFound(NotFoundException ex){
-        return new ExceptionsPayload(ex.getMessage(), LocalDateTime.now());
+    public ErrorsPayload handleNotFound(NotFoundException ex){
+        return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionsPayload handleGenericErrors(Exception ex){
+    public ErrorsPayload handleGenericErrors(Exception ex){
         ex.printStackTrace();
-        return new ExceptionsPayload("Problema interno", LocalDateTime.now());
+        return new ErrorsPayload("Problema lato server!", LocalDateTime.now());
     }
 }
