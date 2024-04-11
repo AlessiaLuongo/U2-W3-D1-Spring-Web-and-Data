@@ -4,6 +4,7 @@ import alessia.U2W3D1.Spring.Web.and.Data.entities.Author;
 import alessia.U2W3D1.Spring.Web.and.Data.entities.BlogPost;
 import alessia.U2W3D1.Spring.Web.and.Data.exceptions.BadRequestException;
 import alessia.U2W3D1.Spring.Web.and.Data.exceptions.NotFoundException;
+import alessia.U2W3D1.Spring.Web.and.Data.payloads.PayloadBlogPost;
 import alessia.U2W3D1.Spring.Web.and.Data.repositories.AuthorsDAO;
 import alessia.U2W3D1.Spring.Web.and.Data.repositories.BlogPostDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +18,25 @@ import java.util.Optional;
 public class BlogPostService {
 
     @Autowired
-    BlogPostDAO blogPostDAO;
-    private List<BlogPost> blogPostList = new ArrayList<>();
     private AuthorsDAO authorsDAO;
+    @Autowired
+    BlogPostDAO blogPostDAO;
+
+
 
     public List<BlogPost> getBlogPostList(){
         return this.blogPostDAO.findAll();
     }
 
-    public BlogPost saveBlogPost(BlogPost body) {
-       return this.blogPostDAO.save(new BlogPost());
-    }
+    public BlogPost saveBlogPost(PayloadBlogPost body) {
+        Author author = authorsDAO.findById(body.getAuthorId())
+                .orElseThrow(() -> new NotFoundException(body.getAuthorId()));
 
+        BlogPost newPost = new BlogPost(body.getCategory(), body.getTitle(), body.getCover(), body.getContent(), body.getReadingTime());
+        newPost.setAuthor(author);
+
+        return this.blogPostDAO.save(newPost);
+    }
     public BlogPost findById(int id){
         return blogPostDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
 

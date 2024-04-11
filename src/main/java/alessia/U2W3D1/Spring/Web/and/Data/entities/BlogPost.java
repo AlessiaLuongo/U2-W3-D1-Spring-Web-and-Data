@@ -26,4 +26,12 @@ public class BlogPost {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
+
+    public BlogPost(String category, String title, String cover, String content, int readingTime) {
+        this.category = category;
+        this.title = title;
+        this.cover = cover;
+        this.content = content;
+        this.readingTime = readingTime;
+    }
 }

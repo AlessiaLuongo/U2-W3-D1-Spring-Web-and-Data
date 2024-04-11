@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class PayloadBlogPost {
-    private Author name;
+
     private String category;
     private String title;
     private String cover;
     private String content;
     private int readingTime;
+    private int authorId;
 }

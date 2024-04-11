@@ -1,5 +1,6 @@
 package alessia.U2W3D1.Spring.Web.and.Data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,11 +23,12 @@ public class Author {
     private int id;
     private String name;
     private String surname;
-    private String eMail;
+    private String EMail;
     private int birthdayYear;
     private String avatar;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<BlogPost> blogPostList = new ArrayList<>();
 }
 

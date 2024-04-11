@@ -18,7 +18,6 @@ public class AuthorService {
     @Autowired
     AuthorsDAO authorsDAO;
 
-    List<Author> authorList = new ArrayList<>();
 
     public List<Author> getAuthorList() {
         return this.authorsDAO.findAll();

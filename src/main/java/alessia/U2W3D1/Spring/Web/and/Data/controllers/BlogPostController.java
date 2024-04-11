@@ -23,30 +23,23 @@ public class BlogPostController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    private BlogPost saveBlogPost(@RequestBody PayloadBlogPost payload){
-        BlogPost blogPost = new BlogPost();
-        blogPost.setAuthor(payload.getName());
-        blogPost.setTitle(payload.getTitle());
-        blogPost.setContent(payload.getContent());
-        blogPost.setCategory(payload.getCategory());
-        blogPost.setReadingTime(payload.getReadingTime());
-
-        return this.blogPostService.saveBlogPost(blogPost);
+    public BlogPost saveBlogPost(@RequestBody PayloadBlogPost payload){
+        return blogPostService.saveBlogPost(payload);
     }
 
     @GetMapping("/{blogPostId}")
-    private BlogPost getSingleBlogPost(@PathVariable int blogPostId){
+    public BlogPost getSingleBlogPost(@PathVariable int blogPostId){
     return this.blogPostService.findById(blogPostId);
     }
 
     @PutMapping("/{blogPostId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    private BlogPost findSinglePostAndUpdate(@PathVariable int blogPostId, @RequestBody BlogPost body){
+    public BlogPost findSinglePostAndUpdate(@PathVariable int blogPostId, @RequestBody BlogPost body){
         return this.blogPostService.findByIdAndUpdate(blogPostId, body);
     }
     @DeleteMapping("/{blogPostId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void deleteBlogPost(@PathVariable int blogPostId){
+    public void deleteBlogPost(@PathVariable int blogPostId){
         this.blogPostService.findByIdAndDelete(blogPostId);
     }
 
